@@ -48,9 +48,10 @@ const ChatbotWidget = () => {
     if (typeof window !== 'undefined') {
       synthRef.current = window.speechSynthesis;
       
-      if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
-        const SpeechRecognition = window.SpeechRecognition || (window as any).webkitSpeechRecognition;
-        recognitionRef.current = new SpeechRecognition();
+      // Proper handling of SpeechRecognition with TypeScript
+      if ('webkitSpeechRecognition' in window) {
+        const SpeechRecognitionAPI = (window as any).webkitSpeechRecognition;
+        recognitionRef.current = new SpeechRecognitionAPI();
         recognitionRef.current.continuous = false;
         recognitionRef.current.interimResults = false;
         recognitionRef.current.lang = i18n.language;
@@ -195,27 +196,27 @@ const ChatbotWidget = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="fixed bottom-20 right-4 z-40 w-80 sm:w-96 bg-white rounded-lg shadow-xl overflow-hidden"
+            className="fixed bottom-20 right-4 z-40 w-80 sm:w-96 bg-card rounded-lg shadow-xl overflow-hidden border border-border"
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
           >
             {/* Chatbot Header */}
-            <div className="bg-primary text-white p-4 flex items-center justify-between">
+            <div className="bg-primary text-primary-foreground p-4 flex items-center justify-between">
               <h3 className="font-semibold">{t('home.chatbot')}</h3>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsOpen(false)}
-                className="hover:bg-primary-foreground/10 text-white"
+                className="hover:bg-primary-foreground/10 text-primary-foreground"
               >
                 <X size={18} />
               </Button>
             </div>
             
             {/* Messages Container */}
-            <div className="h-80 overflow-y-auto p-4 bg-gray-50 flex flex-col space-y-3">
+            <div className="h-80 overflow-y-auto p-4 bg-muted/10 flex flex-col space-y-3">
               {messages.map((message) => (
                 <motion.div
                   key={message.id}
@@ -223,7 +224,7 @@ const ChatbotWidget = () => {
                     "max-w-[80%] p-3 rounded-lg shadow-sm",
                     message.isBot 
                       ? "bg-primary/10 self-start rounded-bl-none" 
-                      : "bg-primary text-white self-end rounded-br-none"
+                      : "bg-primary text-primary-foreground self-end rounded-br-none"
                   )}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -236,7 +237,7 @@ const ChatbotWidget = () => {
             </div>
             
             {/* Input Area */}
-            <div className="p-3 border-t flex items-center gap-2 bg-white">
+            <div className="p-3 border-t border-border flex items-center gap-2 bg-card">
               <Button
                 variant={isListening ? "destructive" : "outline"}
                 size="icon"

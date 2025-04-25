@@ -3,18 +3,24 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { Menu, Globe, X } from 'lucide-react';
+import { Menu, Globe, X, Sun, Moon } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import ChatbotWidget from './ChatbotWidget';
+import { useTheme } from 'next-themes';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const { t, i18n } = useTranslation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+  const { theme, setTheme } = useTheme();
   const location = useLocation();
 
   const toggleLanguage = () => {
     const newLanguage = i18n.language === 'en' ? 'es' : 'en';
     i18n.changeLanguage(newLanguage);
+  };
+
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
   const navItems = [
@@ -29,7 +35,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="bg-primary text-white shadow-md">
+      <header className="bg-primary text-primary-foreground shadow-md">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <Link to="/" className="flex items-center space-x-2">
             <motion.div
@@ -53,15 +59,26 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 {item.name}
               </Link>
             ))}
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={toggleLanguage}
-              className="bg-transparent border border-white hover:bg-white/10"
-            >
-              <Globe size={16} className="mr-1" />
-              {i18n.language === 'en' ? 'ES' : 'EN'}
-            </Button>
+            <div className="flex space-x-2">
+              <Button 
+                variant="outline" 
+                size="icon"
+                onClick={toggleTheme}
+                className="bg-transparent border border-primary-foreground hover:bg-primary-foreground/10 rounded-full"
+                title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              >
+                {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={toggleLanguage}
+                className="bg-transparent border border-primary-foreground hover:bg-primary-foreground/10"
+              >
+                <Globe size={16} className="mr-1" />
+                {i18n.language === 'en' ? 'ES' : 'EN'}
+              </Button>
+            </div>
           </div>
           
           <div className="md:hidden">
@@ -69,7 +86,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               variant="ghost"
               size="icon"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="text-white"
+              className="text-primary-foreground"
             >
               {isMobileMenuOpen ? <X /> : <Menu />}
             </Button>
@@ -83,7 +100,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden bg-primary border-t border-white/10"
+            className="md:hidden bg-primary border-t border-primary-foreground/10"
           >
             <div className="container mx-auto px-4 py-3 flex flex-col space-y-3">
               {navItems.map((item) => (
@@ -98,15 +115,25 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                   {item.name}
                 </Link>
               ))}
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={toggleLanguage}
-                className="bg-transparent border border-white hover:bg-white/10 w-fit"
-              >
-                <Globe size={16} className="mr-1" />
-                {i18n.language === 'en' ? 'ES' : 'EN'}
-              </Button>
+              <div className="flex space-x-2 py-2">
+                <Button 
+                  variant="outline" 
+                  size="icon"
+                  onClick={toggleTheme}
+                  className="bg-transparent border border-primary-foreground hover:bg-primary-foreground/10 rounded-full"
+                >
+                  {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={toggleLanguage}
+                  className="bg-transparent border border-primary-foreground hover:bg-primary-foreground/10 w-fit"
+                >
+                  <Globe size={16} className="mr-1" />
+                  {i18n.language === 'en' ? 'ES' : 'EN'}
+                </Button>
+              </div>
             </div>
           </motion.div>
         )}
