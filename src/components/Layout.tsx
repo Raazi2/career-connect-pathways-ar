@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -7,6 +6,13 @@ import { Menu, Globe, X, Sun, Moon } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import ChatbotWidget from './ChatbotWidget';
 import { useTheme } from 'next-themes';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const { t, i18n } = useTranslation();
@@ -32,6 +38,18 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     { name: t('common.vr'), path: '/vr' },
     { name: t('common.learn'), path: '/learn' },
   ];
+
+  const languages = [
+    { code: 'en', name: 'English' },
+    { code: 'hi', name: 'हिंदी' },
+    { code: 'bn', name: 'বাংলা' },
+    { code: 'ta', name: 'தமிழ்' },
+    { code: 'es', name: 'Español' }
+  ];
+
+  const handleLanguageChange = (langCode: string) => {
+    i18n.changeLanguage(langCode);
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -69,15 +87,19 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               >
                 {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
               </Button>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={toggleLanguage}
-                className="bg-transparent border border-primary-foreground hover:bg-primary-foreground/10"
-              >
-                <Globe size={16} className="mr-1" />
-                {i18n.language === 'en' ? 'ES' : 'EN'}
-              </Button>
+              <Select value={i18n.language} onValueChange={handleLanguageChange}>
+                <SelectTrigger className="w-[140px]">
+                  <Globe size={16} className="mr-2" />
+                  <SelectValue placeholder={t('common.language')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {languages.map((lang) => (
+                    <SelectItem key={lang.code} value={lang.code}>
+                      {lang.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
           
@@ -124,15 +146,19 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 >
                   {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
                 </Button>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={toggleLanguage}
-                  className="bg-transparent border border-primary-foreground hover:bg-primary-foreground/10 w-fit"
-                >
-                  <Globe size={16} className="mr-1" />
-                  {i18n.language === 'en' ? 'ES' : 'EN'}
-                </Button>
+                <Select value={i18n.language} onValueChange={handleLanguageChange}>
+                  <SelectTrigger className="w-[140px]">
+                    <Globe size={16} className="mr-2" />
+                    <SelectValue placeholder={t('common.language')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {languages.map((lang) => (
+                      <SelectItem key={lang.code} value={lang.code}>
+                        {lang.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </motion.div>
